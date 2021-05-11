@@ -1,0 +1,85 @@
+{
+    "$schema": "https://json-schema.org/schema#",
+    "type": "object",
+    "description":"Define a set of files.",
+    "definitions":{
+        "file":{
+            "type":"object",
+            "properties":{
+                "file_path":{
+                    "type":"string"
+                },
+                "sha256_hash":{
+                    "type":"string"
+                },
+                "last_modified_timestamp":{
+                    "type":"string"
+                }
+            },
+            "additionalProperties":false
+        },
+        "sample_annotations":{
+            "type":"array",
+            "description":"A list of annotations to attributed to a sample",
+            "items":{
+                "type":"object",
+                "description":"An annotation attributed to a sample",
+                "properties":{
+                    "group":{
+                        "title":"Annotation Group",
+                        "type":["string","null"]
+                    },
+                    "type":{
+                        "title":"Annotation Type",
+                        "type":"string",
+                        "enum":["discrete","timepoint","batch"]
+                    },
+                    "name":{
+                        "title":"Label",
+                        "type":"string"
+                    },
+                    "value":{
+                        "title":"Numeric Order",
+                        "type":"integer"
+                    }
+                }
+            }
+        }
+    },
+    "properties":{
+        "samples":{
+            "type":"array",
+            "description":"One mass cytometry sample.",
+            "items":{
+                "type":"object",
+                "properties":{
+                    "sample_name":{
+                        "title":"Sample Name",
+                        "type":"string"
+                    },
+                    "fcs_file":{
+                        "title":"FCS File",
+                        "allOf":[
+                            {"$ref":"#/definitions/file"},
+                            {
+                                "type":"object",
+                                "description":"The FCS file.",
+                                "properties":{
+                                    "suffix":{
+                                        "type":"string",
+                                        "const":".fcs"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "sample_annotations":{"$ref":"#/definitions/sample_annotations"}
+                },
+                "additionalProperties":false,
+                "required":["sample_name","fcs_file","sample_annotations"]
+            }
+        }
+    },
+    "additionalProperties":false,
+    "required":["samples"]
+}

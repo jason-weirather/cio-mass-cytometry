@@ -1,0 +1,74 @@
+{
+    "$schema": "https://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "markers":{
+            "title":"Panel",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "description": "Stain marker names are keys to these properites.",
+                "properties":{
+                    "marker_name":{
+                        "title":"Marker",
+                        "type":"string",
+                        "description":"Short name unique to each entry, and is the name found in the FCS file."
+                    },
+                    "report_name":{
+                        "title":"analysis_name",
+                        "type":["string","null"],
+                        "description":"Optionally set a different display name."
+                    },
+                    "metal":{
+                        "title":"Metal",
+                        "type":"string",
+                        "description":"The metal conjugated to the antibody."
+                    },
+                    "clone":{
+                        "title":"Clone",
+                        "type":"string",
+                        "description":"The clone identifier for the antibody."
+                    },
+                    "compartment":{
+                        "title":"Compartment",
+                        "type":"string",
+                        "description":"Where this marker is expected to localize.",
+                        "enum":["Surface","Intracellular"]
+                    },
+                    "lineage_assignment":{
+                        "title":"Lineage Marker (default TRUE)",
+                        "type":["boolean"],
+                        "default":true,
+                        "description":"This marker should be used when assigning a cell phenotype."
+                    }
+                },
+                "additionalProperties":false,
+                "required":["marker_name","metal"]
+            }
+        },
+        "parameters": {
+            "title":"Parameters",
+            "type": "object",
+            "properties":{
+                "panel_name":{
+                    "title":"Panel Name",
+                    "type":"string",
+                    "description":"The panel name."
+                },
+                "panel_description":{
+                    "title":"Panel Description",
+                    "type":"string",
+                    "description":"A description of the panel."
+                },
+                "panel_version":{
+                    "title":"Panel Version",
+                    "type":"string",
+                    "description":"A version of the panel."
+                }
+            },
+            "additionalProperties":false
+        }
+    },
+    "additionalProperties":false,
+    "required": ["markers","parameters"]
+}
