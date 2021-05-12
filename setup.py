@@ -30,7 +30,7 @@ setup(
   install_requires = ['jsonschema','importlib_resources','XlsxWriter'],
   include_package_data = True,
   entry_points = {
-    'console_scripts':['masscytometry-templates=cio_mass_cytometry.cli:cli'
+    'console_scripts':['masscytometry-templates=cio_mass_cytometry.cli:main'
                       ]
   }
 )
