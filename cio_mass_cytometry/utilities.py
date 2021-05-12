@@ -1,6 +1,8 @@
 import json, sys
 from jsonschema import Draft7Validator, RefResolver, SchemaError
 
+import pkg_resources  # part of setuptools
+
 def get_validator(filename, base_uri=''):
 	# Adapated from https://www.programcreek.com/python/example/83374/jsonschema.RefResolver
 	# referencing code from HumanCellAtlas Apache License
@@ -32,3 +34,6 @@ def get_validator(filename, base_uri=''):
         resolver = None
     return Draft7Validator(schema=schema,
                            resolver=resolver) 
+
+def get_version():
+    return pkg_resources.require("cio_mass_cytometry")[0].version

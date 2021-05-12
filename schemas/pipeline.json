@@ -1,0 +1,13 @@
+{
+    "$schema": "https://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "version": {
+            "title":"Pipeline Version",
+            "type": "string",
+            "description":"The version defined in setup.py"
+        }
+    },
+    "additionalProperties":false,
+    "required": ["version"]
+}

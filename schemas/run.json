@@ -1,0 +1,30 @@
+{
+    "$schema": "https://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "panel":{ "$ref": "panels.json#" },
+        "files":{ "$ref": "files.json#" },
+        "parameters": {
+            "type": "object",
+            "properties":{
+                "pipeline_version":{
+                    "type":"string",
+                    "description":"The version of the pipeline software in setup.py."
+                },
+                "panel_description":{
+                    "title":"Panel Description",
+                    "type":"string",
+                    "description":"A description of the panel."
+                },
+                "panel_version":{
+                    "title":"Panel Version",
+                    "type":"string",
+                    "description":"A version of the panel."
+                }
+            },
+            "additionalProperties":false
+        }
+    },
+    "additionalProperties":false,
+    "required": ["panel","files"]
+}
