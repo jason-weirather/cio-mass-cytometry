@@ -5,8 +5,8 @@ Create and modify and read the mass cytometry data
 import argparse, logging, os
 from cio_mass_cytometry.utilities import get_validator, get_version
 
-from cio_mass_cytometry.cli.generate_templates import create_template
-from cio_mass_cytometry.cli.ingest_templates import read_excel_template
+from cio_mass_cytometry.template.generate_templates import create_template
+from cio_mass_cytometry.template.ingest_templates import read_excel_template
 
 
 logging.basicConfig(level=logging.WARN)
