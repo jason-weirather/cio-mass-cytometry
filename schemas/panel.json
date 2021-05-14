@@ -15,7 +15,7 @@
                         "description":"Short name unique to each entry, and is the name found in the FCS file."
                     },
                     "report_name":{
-                        "title":"analysis_name",
+                        "title":"Display Name",
                         "type":["string","null"],
                         "description":"Optionally set a different display name."
                     },
@@ -35,11 +35,22 @@
                         "description":"Where this marker is expected to localize.",
                         "enum":["Surface","Intracellular"]
                     },
+                    "include_marker":{
+                        "title":"Include (default TRUE)",
+                        "type":"bool",
+                        "default":true
+                    },
                     "lineage_assignment":{
                         "title":"Lineage Marker (default TRUE)",
                         "type":["boolean"],
                         "default":true,
                         "description":"This marker should be used when assigning a cell phenotype."
+                    },
+                    "dimensional_reduction":{
+                        "title":"Dimensional Reduction (default TRUE)",
+                        "type":["boolean"],
+                        "default":true,
+                        "description":"This marker should be used when generating dimensional reduction plots."
                     }
                 },
                 "additionalProperties":false,

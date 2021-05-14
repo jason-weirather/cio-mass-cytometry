@@ -57,6 +57,15 @@
                         "title":"Sample Name",
                         "type":"string"
                     },
+                    "sample_display_name":{
+                        "title":"Sample Display Name",
+                        "type":["string","null"]
+                    },
+                    "include_sample":{
+                        "title":"Include (default TRUE)",
+                        "type":"bool",
+                        "default":true
+                    },
                     "fcs_file":{
                         "title":"FCS File",
                         "allOf":[
@@ -76,7 +85,7 @@
                     "sample_annotations":{"$ref":"#/definitions/sample_annotations"}
                 },
                 "additionalProperties":false,
-                "required":["sample_name","fcs_file","sample_annotations"]
+                "required":["sample_name","sample_display_name","include_sample","fcs_file","sample_annotations"]
             }
         }
     },
