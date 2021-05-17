@@ -58,6 +58,7 @@ def read_excel_template(template_path,mylogger):
 
     logger.info("Validate the constructed analysis inputs")
 
+
     return output
 
 
@@ -110,7 +111,7 @@ def parse_panel(panel_parameters,panel_definition):
 def parse_samples(sample_manifest,sample_annotations):
 
     # Get the json schema
-    _validator = get_validator(files('schemas').joinpath('analysis.json'))
+    _validator = get_validator(files('schemas').joinpath('inputs.json'))
     _schema = _validator.schema 
 
     # Lets the the sample annotation table
