@@ -32,6 +32,7 @@ def cmd_create(args):
       raise ValueError("Cannot overwrite without --overwrite option")
    create_template(args.template_path,logger)
    logger.info("Finished creating the template")
+
 def cmd_ingest(args):
    # Read in and write out json
    data = read_excel_template(args.template_path,logger)
@@ -42,10 +43,12 @@ def main():
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
    subparsers = parser.add_subparsers(help='Choose how to work with the tempate')
 
+   # CREATE A NEW TEMPLATE
    parser_create = subparsers.add_parser('create', help='Create a new template')
    parser_create.add_argument("--overwrite",action="store_true",help="Allow file overwriting on creation")
    parser_create.set_defaults(func=cmd_create)
 
+   # ADD SAMPLES TO AN EXISTING TEMPLATE
    parser_add = subparsers.add_parser('add_samples', help='Add samples to a template.')
    parser_add.add_argument("--samples_path",help="Path where samples are stored",required=True)
    grp = parser_add.add_mutually_exclusive_group(required=True)
@@ -54,9 +57,7 @@ def main():
    parser_add.add_argument("--sample_name_regex",help="Regular expression string for the sample name")
    parser_add.set_defaults(func=cmd_add_samples)
 
-   parser_validate = subparsers.add_parser('validate', help='Validate an existing template.')
-   parser_validate.set_defaults(func=cmd_validate)
-
+   # INGEST A TEMPLATE
    parser_ingest = subparsers.add_parser('ingest', help='Read an existing template.')
    parser_ingest.set_defaults(func=cmd_ingest)
 

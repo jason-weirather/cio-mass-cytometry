@@ -14,7 +14,7 @@
                         "type":"string",
                         "description":"Short name unique to each entry, and is the name found in the FCS file."
                     },
-                    "report_name":{
+                    "maker_display_name":{
                         "title":"Display Name",
                         "type":["string","null"],
                         "description":"Optionally set a different display name."
@@ -37,7 +37,7 @@
                     },
                     "include_marker":{
                         "title":"Include (default TRUE)",
-                        "type":"bool",
+                        "type":"boolean",
                         "default":true
                     },
                     "lineage_assignment":{
