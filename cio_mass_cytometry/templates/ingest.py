@@ -58,6 +58,8 @@ def read_excel_template(template_path,mylogger):
 
     logger.info("Validate the constructed analysis inputs")
 
+    _validator = get_validator(files('schemas').joinpath('samples.json'))
+    _validator.validate(output)
 
     return output
 
@@ -98,16 +100,24 @@ def parse_panel(panel_parameters,panel_definition):
     for column_name in df.columns:
         if '(default TRUE)' in column_name:
             df.loc[df[column_name].isna(),column_name] = True
+            df.loc[~df[column_name].isna(),column_name] = df.loc[~df[column_name].isna(),column_name].astype(bool)
+    for column_name in df.columns:
+        if '(default TRUE)' not in column_name:
+            df[column_name] = df[column_name].apply(lambda x: x if x is None else str(x))
 
     # Now lets add some custom code for things with default values
 
     df.columns = list(_conv.values())
     panel_definition_json = [row.to_dict() for i,row in df.iterrows()]
-    return {
+
+    output = {
         'parameters':panel_parameters_json,
         'markers':panel_definition_json
     }
+    logger.info("Validating panel json schema")
+    _validator.validate(output)
 
+    return output
 def parse_samples(sample_manifest,sample_annotations):
 
     # Get the json schema
@@ -155,6 +165,10 @@ def parse_samples(sample_manifest,sample_annotations):
     for column_name in df0.columns:
         if '(default TRUE)' in column_name:
             df0.loc[df0[column_name].isna(),column_name] = True
+    # Go through and cast strings
+    for column_name in df0.columns:
+        if '(default TRUE)' not in column_name:
+            df0[column_name] = df0[column_name].apply(lambda x: x if x is None else str(x))
     # Now lets add some custom code for things with default values
     df0.columns = list(_conv.values())
 
