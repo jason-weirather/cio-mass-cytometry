@@ -47,11 +47,10 @@ def read_excel_template(template_path,mylogger):
     logger.info("Read the meta data")
     meta_df = pd.read_excel(template_path,sheet_name=required_sheets['meta']).set_index('Parameter')
 
-    return
     output = {
         "panel":panel_json,
-        "annotation_levels":annotation_levels_json,
-        "samples":samples_json,
+        "annotation_levels":samples_json["annotation_levels"],
+        "samples":samples_json["samples"],
         "meta":{
             "template_generation_pipeline_version":str(meta_df.loc['Pipeline Version']['Value']),
             "template_ingestion_pipeline_version":str(get_version()),            
@@ -60,7 +59,7 @@ def read_excel_template(template_path,mylogger):
 
     logger.info("Validate the constructed analysis inputs")
 
-    _validator = get_validator(files('schemas').joinpath('samples.json'))
+    _validator = get_validator(files('schemas').joinpath('inputs.json'))
     _validator.validate(output)
 
     return output

@@ -1,0 +1,20 @@
+{
+    "$schema": "https://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "panel":{},
+        "annotation_levels":{},
+        "samples":{},
+        "meta":{
+            "type":"object",
+            "properties":{
+                "template_generation_pipeline_version":{"type":"string"},
+                "template_ingestion_pipeline_version":{"type":"string"}
+            },
+            "additionalProperties":false,
+            "required":["template_generation_pipeline_version","template_ingestion_pipeline_version"]
+        }
+    },
+    "additionalProperties":false,
+    "required":["panel","annotation_levels","samples","meta"]
+}
