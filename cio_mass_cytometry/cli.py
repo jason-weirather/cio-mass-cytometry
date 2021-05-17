@@ -2,7 +2,7 @@
 Create and modify and read the mass cytometry data
 """ 
 
-import argparse, logging, os
+import argparse, logging, os, json
 from cio_mass_cytometry.utilities import get_validator, get_version
 
 from cio_mass_cytometry.templates.generate import create_template
@@ -36,6 +36,10 @@ def cmd_create(args):
 def cmd_ingest(args):
    # Read in and write out json
    data = read_excel_template(args.template_path,logger)
+   if args.output_ingested_json:
+      with open(args.output_ingested_json,'wt') as of:
+         of.write(json.dumps(data,indent=2))
+
 
 def main():
    parser = argparse.ArgumentParser(
@@ -59,6 +63,7 @@ def main():
 
    # INGEST A TEMPLATE
    parser_ingest = subparsers.add_parser('ingest', help='Read an existing template.')
+   parser_ingest.add_argument("--output_ingested_json",help="Save the staged json data")
    parser_ingest.set_defaults(func=cmd_ingest)
 
    parser.add_argument('-v','--verbose',action='store_true')
