@@ -1,7 +1,7 @@
 import logging
 import pandas as pd
 from openpyxl import load_workbook
-from cio_mass_cytometry.utilities import get_validator
+from cio_mass_cytometry.utilities import get_validator, get_version
 from importlib_resources import files
 from collections import OrderedDict
 
@@ -30,17 +30,36 @@ def read_excel_template(template_path,mylogger):
             raise ValueError("Missing required sheet "+str(sheet_name))
 
     logger.info("Read the panel and panel parameters")
-    panel = parse_panel(pd.read_excel(template_path,sheet_name=required_sheets['panel_parameters']),
+    panel_json = parse_panel(pd.read_excel(template_path,sheet_name=required_sheets['panel_parameters']),
                         pd.read_excel(template_path,sheet_name=required_sheets['panel_definition'])
             )
 
     logger.info("Read the samples")
-    samples = parse_samples(pd.read_excel(template_path,sheet_name=required_sheets['sample_manifest']),
+    annotation_levels_json, samples_json = parse_samples(pd.read_excel(template_path,sheet_name=required_sheets['sample_manifest']),
                             pd.read_excel(template_path,sheet_name=required_sheets['sample_annotations'])
               )
 
+    # Now put together the final analysis json
+    logger.info("Put together a final analysis file")
+
+
     logger.info("Read the meta data")
-    meta = parse_meta(pd.read_excel(template_path,sheet_name=required_sheets['meta']))
+    meta_df = pd.read_excel(template_path,sheet_name=required_sheets['meta']).set_index('Parameter')
+
+    output = {
+        "panel":panel_json,
+        "annotation_levels":annotation_levels_json,
+        "samples":samples_json,
+        "meta":{
+            "template_generation_pipeline_version":str(meta_df.loc['Pipeline Version']['Value']),
+            "template_ingestion_pipeline_version":str(get_version()),            
+        }
+    }
+
+    logger.info("Validate the constructed analysis inputs")
+
+    return output
+
 
 def parse_panel(panel_parameters,panel_definition):
     # Get the json schema
@@ -91,7 +110,7 @@ def parse_panel(panel_parameters,panel_definition):
 def parse_samples(sample_manifest,sample_annotations):
 
     # Get the json schema
-    _validator = get_validator(files('schemas').joinpath('files.json'))
+    _validator = get_validator(files('schemas').joinpath('analysis.json'))
     _schema = _validator.schema 
 
     # Lets the the sample annotation table
@@ -145,18 +164,15 @@ def parse_samples(sample_manifest,sample_annotations):
     df1.index.name = 'sample_name'
 
     # Get the sample annotations, but still missing some information about the sample annotations
-    df1 = df1.stack().reset_index().rename(columns={'level_1':'annotation_group',0:'annotation_value'}).\
-        merge(df2,on=['annotation_group'],how='left')
+    df1 = df1.stack().reset_index().rename(columns={'level_1':'annotation_group',0:'annotation_name'}).\
+        merge(df2,on=['annotation_group','annotation_name'],how='left')
     if df1.loc[df1['annotation_order'].isna(),:].shape[0] > 0:
         raise ValueError("Undefined annotation group "+str(df1.loc[df1['annotation_order'].isna(),'annotation_group'].unique()))
     annotations = OrderedDict([(sample_name,OrderedDict(row.to_dict())) for sample_name, row in df1.set_index('sample_name').iterrows()])
     for i, sample_object in enumerate(samples_json):
         sample_name = sample_object['sample_name']
         samples_json[i]['sample_annotations'] = annotations[sample_name]
-    return {
-        "annotation_levels":annotation_levels_json,
-        "samples":samples_json
-    }
+    return annotation_levels_json, samples_json
 
 def parse_annotations(sample_annotations):
     return

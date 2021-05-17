@@ -48,6 +48,7 @@
         }
     },
     "properties":{
+        "panel":{"$ref":"panel.json"},
         "annotation_levels":{
             "type":"array",
             "description":"A list of all the expected annotations to for analysis",
@@ -90,26 +91,29 @@
                     },
                     "sample_annotations":{
                         "type":"array",
-                        "items":{
-                            "allOf":[
-                                {"$ref":"#/definitions/annotation_type"},
-                                {
-                                    "type":"object",
-                                    "properties":{
-                                        "annotation_value":{
-                                            "type":"string"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
+                        "items":{"$ref":"#/definitions/annotation_type"}
                     }
                 },
                 "additionalProperties":false,
                 "required":["sample_name","sample_display_name","include_sample","fcs_file","sample_annotations"]
+            },
+            "parameters":{
+                "type":"object",
+                "description":"Values to describe the input data",
+                "properties":{
+                    "template_generation_pipeline_version":{
+                        "description":"Version of the pipeline used to generate the template",
+                        "type":"string"
+                    },
+                    "template_ingestion_pipeline_version":{
+                        "description":"Version of the pipeline used to ingest the template",
+                        "type":"string"
+                    }
+                },
+                "additionalProperties":false
             }
         }
     },
     "additionalProperties":false,
-    "required":["samples"]
+    "required":["panel","annotation_levels","samples","meta"]
 }
