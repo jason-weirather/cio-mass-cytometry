@@ -14,11 +14,14 @@
                 },
                 "last_modified_timestamp":{
                     "type":"string"
+                },
+                "creation_timestamp":{
+                    "type":"string"
                 }
             },
             "additionalProperties":false
         },
-        "annotation_type":{
+        "annotation_level":{
             "type":"object",
             "description":"An annotation attributed to a sample",
             "properties":{
@@ -29,7 +32,7 @@
                 "annotation_type":{
                     "title":"Annotation Type",
                     "type":"string",
-                    "enum":["discrete","timepoint","batch"]
+                    "enum":["discrete","timepoint","batch","arm"]
                 },
                 "annotation_name":{
                     "title":"Label",
@@ -48,11 +51,10 @@
         }
     },
     "properties":{
-        "panel":{"$ref":"panel.json"},
         "annotation_levels":{
             "type":"array",
             "description":"A list of all the expected annotations to for analysis",
-            "items":{"$ref":"#/definitions/annotation_type"}
+            "items":{"$ref":"#/definitions/annotation_level"}
         },
         "samples":{
             "type":"array",
@@ -91,7 +93,7 @@
                     },
                     "sample_annotations":{
                         "type":"array",
-                        "items":{"$ref":"#/definitions/annotation_type"}
+                        "items":{"$ref":"#/definitions/annotation_level"}
                     }
                 },
                 "additionalProperties":false,

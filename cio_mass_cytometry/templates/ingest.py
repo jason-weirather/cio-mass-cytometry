@@ -1,9 +1,10 @@
-import logging
+import logging, os
 import pandas as pd
 from openpyxl import load_workbook
-from cio_mass_cytometry.utilities import get_validator, get_version
+from cio_mass_cytometry.utilities import get_validator, get_version, sha256sum
 from importlib_resources import files
 from collections import OrderedDict
+from datetime import datetime
 
 
 logging.basicConfig(level=logging.WARN)
@@ -35,7 +36,7 @@ def read_excel_template(template_path,mylogger):
             )
 
     logger.info("Read the samples")
-    annotation_levels_json, samples_json = parse_samples(pd.read_excel(template_path,sheet_name=required_sheets['sample_manifest']),
+    samples_json = parse_samples(pd.read_excel(template_path,sheet_name=required_sheets['sample_manifest']),
                             pd.read_excel(template_path,sheet_name=required_sheets['sample_annotations'])
               )
 
@@ -46,6 +47,7 @@ def read_excel_template(template_path,mylogger):
     logger.info("Read the meta data")
     meta_df = pd.read_excel(template_path,sheet_name=required_sheets['meta']).set_index('Parameter')
 
+    return
     output = {
         "panel":panel_json,
         "annotation_levels":annotation_levels_json,
@@ -119,14 +121,23 @@ def parse_panel(panel_parameters,panel_definition):
 
     return output
 def parse_samples(sample_manifest,sample_annotations):
+    def _do_fcs_file(path):
+        if not os.path.exists(path):
+            raise ValueError("Path does not exist: "+str(path))
+        return {
+            'file_path':path,
+            'creation_timestamp':datetime.fromtimestamp(os.path.getctime(path)).strftime("%m/%d/%Y, %H:%M:%S"),
+            'last_modified_timestamp':datetime.fromtimestamp(os.path.getmtime(path)).strftime("%m/%d/%Y, %H:%M:%S"),
+            'sha256_hash':sha256sum(path)
+        }
 
     # Get the json schema
-    _validator = get_validator(files('schemas').joinpath('inputs.json'))
+    _validator = get_validator(files('schemas').joinpath('samples.json'))
     _schema = _validator.schema 
 
     # Lets the the sample annotation table
     # Get the samples
-    _annot_def = _schema['definitions']['annotation_type']['properties']
+    _annot_def = _schema['definitions']['annotation_level']['properties']
     _conv2 = OrderedDict([(x[1]['title'],x[0]) for x in _annot_def.items() if 'title' in x[1]])
     df2 = sample_annotations.loc[:,list(_conv2.keys())]
     # Go through and fill in default values
@@ -173,6 +184,9 @@ def parse_samples(sample_manifest,sample_annotations):
     df0.columns = list(_conv.values())
 
     samples_json = [row.to_dict() for i,row in df0.iterrows()]
+    # Fix the filenames
+    for i,sample_row in enumerate(samples_json):
+        samples_json[i]['fcs_file'] = _do_fcs_file(samples_json[i]['fcs_file'])
 
     # collect up the annotations .. a little hard coded
     df1 = sample_manifest.set_index('Sample Name').loc[:,set(sample_manifest.columns)-set(_conv.keys())]
@@ -184,10 +198,22 @@ def parse_samples(sample_manifest,sample_annotations):
     if df1.loc[df1['annotation_order'].isna(),:].shape[0] > 0:
         raise ValueError("Undefined annotation group "+str(df1.loc[df1['annotation_order'].isna(),'annotation_group'].unique()))
     annotations = OrderedDict([(sample_name,OrderedDict(row.to_dict())) for sample_name, row in df1.set_index('sample_name').iterrows()])
+
+    annotations = df1.set_index('sample_name')
     for i, sample_object in enumerate(samples_json):
         sample_name = sample_object['sample_name']
-        samples_json[i]['sample_annotations'] = annotations[sample_name]
-    return annotation_levels_json, samples_json
+        _annots = annotations.loc[sample_name]
+        _annots = [row.to_dict() for sample_name, row in _annots.iterrows()]
+        samples_json[i]['sample_annotations'] = _annots
+
+    outputs = {
+        "annotation_levels":annotation_levels_json,
+        "samples":samples_json
+    }
+    
+    _validator.validate(outputs)
+
+    return outputs
 
 def parse_annotations(sample_annotations):
     return

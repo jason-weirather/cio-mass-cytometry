@@ -1,5 +1,6 @@
 import json, sys
 from jsonschema import Draft7Validator, RefResolver, SchemaError
+import hashlib
 
 import pkg_resources  # part of setuptools
 
@@ -37,3 +38,15 @@ def get_validator(filename, base_uri=''):
 
 def get_version():
     return pkg_resources.require("cio_mass_cytometry")[0].version
+
+
+
+def sha256sum(filename):
+    # https://stackoverflow.com/a/44873382
+    h  = hashlib.sha256()
+    b  = bytearray(128*1024)
+    mv = memoryview(b)
+    with open(filename, 'rb', buffering=0) as f:
+        for n in iter(lambda : f.readinto(mv), 0):
+            h.update(mv[:n])
+    return h.hexdigest()
