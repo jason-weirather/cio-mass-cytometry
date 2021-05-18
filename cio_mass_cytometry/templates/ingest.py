@@ -192,10 +192,11 @@ def parse_samples(sample_manifest,sample_annotations):
     df1.index.name = 'sample_name'
 
     # Get the sample annotations, but still missing some information about the sample annotations
-    df1 = df1.stack().reset_index().rename(columns={'level_1':'annotation_group',0:'annotation_name'}).\
-        merge(df2,on=['annotation_group','annotation_name'],how='left')
+    df1 = df1.stack().reset_index().rename(columns={'level_1':'annotation_group',0:'annotation_value'}).\
+        merge(df2,left_on=['annotation_group','annotation_value'],right_on=['annotation_group','annotation_name'],how='left')
     if df1.loc[df1['annotation_order'].isna(),:].shape[0] > 0:
         raise ValueError("Undefined annotation group "+str(df1.loc[df1['annotation_order'].isna(),'annotation_group'].unique()))
+    df1 = df1.drop(columns=['annotation_order','annotation_name','annotation_include','annotation_type'])
     annotations = OrderedDict([(sample_name,OrderedDict(row.to_dict())) for sample_name, row in df1.set_index('sample_name').iterrows()])
 
     annotations = df1.set_index('sample_name')

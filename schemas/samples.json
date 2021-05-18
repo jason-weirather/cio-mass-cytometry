@@ -27,7 +27,7 @@
             "properties":{
                 "annotation_group":{
                     "title":"Annotation Group",
-                    "type":["string","null"]
+                    "type":"string"
                 },
                 "annotation_type":{
                     "title":"Annotation Type",
@@ -93,7 +93,21 @@
                     },
                     "sample_annotations":{
                         "type":"array",
-                        "items":{"$ref":"#/definitions/annotation_level"}
+                        "items":{
+                            "type":"object",
+                            "description":"An annotation attributed to a sample",
+                            "properties":{
+                                "annotation_group":{
+                                    "title":"Annotation Group",
+                                    "type":"string"
+                                },
+                                "annotation_value":{
+                                    "title":"Assigned Value",
+                                    "type":"string"
+                                }
+                            },
+                            "additionalProperties":false
+                        }
                     }
                 },
                 "additionalProperties":false,
