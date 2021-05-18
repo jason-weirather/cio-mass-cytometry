@@ -12,7 +12,12 @@
                     "marker_name":{
                         "title":"Marker",
                         "type":"string",
-                        "description":"Short name unique to each entry, and is the name found in the FCS file."
+                        "description":"The marker name used in the FCS file."
+                    },
+                    "channel_name":{
+                        "title":"Channel",
+                        "type":"string",
+                        "description":"The channel name used in the FCS file."
                     },
                     "maker_display_name":{
                         "title":"Display Name",
@@ -22,7 +27,7 @@
                     "metal":{
                         "title":"Metal",
                         "type":"string",
-                        "description":"The metal conjugated to the antibody."
+                        "description":"The metal congugated to the Ab."
                     },
                     "clone":{
                         "title":"Clone",
