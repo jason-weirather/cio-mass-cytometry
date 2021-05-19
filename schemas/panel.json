@@ -19,7 +19,7 @@
                         "type":"string",
                         "description":"The channel name used in the FCS file."
                     },
-                    "maker_display_name":{
+                    "marker_display_name":{
                         "title":"Display Name",
                         "type":["string","null"],
                         "description":"Optionally set a different display name."
@@ -40,16 +40,16 @@
                         "description":"Where this marker is expected to localize.",
                         "enum":["Surface","Intracellular"]
                     },
+                    "marker_classification":{
+                        "title":"Marker Classification",
+                        "description":"This marker should be used when assigning a cell phenotype. Permitted valuesfollow CATALYST conventions.",
+                        "type":"string",
+                        "enum":["state","type","none"]
+                    },
                     "include_marker":{
                         "title":"Include (default TRUE)",
                         "type":"boolean",
                         "default":true
-                    },
-                    "lineage_assignment":{
-                        "title":"Lineage Marker (default TRUE)",
-                        "type":["boolean"],
-                        "default":true,
-                        "description":"This marker should be used when assigning a cell phenotype."
                     },
                     "dimensional_reduction":{
                         "title":"Dimensional Reduction (default TRUE)",
