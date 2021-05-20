@@ -143,6 +143,7 @@ def parse_samples(sample_manifest,sample_annotations):
     for column_name in df2.columns:
         if '(default TRUE)' in column_name:
             df2.loc[df2[column_name].isna(),column_name] = True
+            df2.loc[~df2[column_name].isna(),column_name] = df2.loc[~df2[column_name].isna(),column_name].astype(bool)
     df2.columns = list(_conv2.values())
 
     annotation_levels_json = [row.to_dict() for i,row in df2.iterrows()]
@@ -162,6 +163,7 @@ def parse_samples(sample_manifest,sample_annotations):
     for column_name in df1.columns:
         if '(default TRUE)' in column_name:
             df1.loc[df1[column_name].isna(),column_name] = True
+            df1.loc[~df1[column_name].isna(),column_name] = df1.loc[~df1[column_name].isna(),column_name].astype(bool)
 
 
 
@@ -175,6 +177,7 @@ def parse_samples(sample_manifest,sample_annotations):
     for column_name in df0.columns:
         if '(default TRUE)' in column_name:
             df0.loc[df0[column_name].isna(),column_name] = True
+            df0.loc[~df0[column_name].isna(),column_name] = df0.loc[~df0[column_name].isna(),column_name].astype(bool)
     # Go through and cast strings
     for column_name in df0.columns:
         if '(default TRUE)' not in column_name:
