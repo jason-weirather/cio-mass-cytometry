@@ -58,9 +58,9 @@ read_json <- function(sample_objs,use_marker_list) {
     return (myval)
 }
 create_single_cell_experiment <- function(data_obj) {
-    panel <- data$panel$markers
+    panel <- data_obj$panel$markers
     panel <- as_tibble(do.call("rbind",panel))
-    samples_json <- data$samples
+    samples_json <- data_obj$samples
     
     tempdf <- panel %>% filter(include_marker==TRUE) %>% select(channel_name,marker_name,marker_display_name)
     use_marker_list = tempdf$marker_name
@@ -72,6 +72,16 @@ create_single_cell_experiment <- function(data_obj) {
     myval <- read_json(samples_json,use_marker_list)
     input_files <- myval$input_files
     annotations <- myval$annotations
+
+    annotation_levels <- as_tibble(do.call("rbind",json_data$annotation_levels)) %>% filter(annotation_include == TRUE)
+    annotation_levels
+
+    for (my_annotation_group in unique(unlist(annotation_levels$annotation_group))) {
+        my_factors <- annotation_levels %>% filter(annotation_group==my_annotation_group) %>% arrange(annotation_order)
+        my_factor_labels <- unlist(my_factors$annotation_name)
+        #my_factor_levels <- unlist(my_factors$annotation_order)
+        annotations[[my_annotation_group]] <- factor(annotations[[my_annotation_group]],levels=my_factor_labels)
+    }
     
     # Create the large flowset
     fs <- read.flowSet(unlist(input_files),truncate_max_range=FALSE,transformation="linearize")
@@ -90,9 +100,9 @@ create_single_cell_experiment <- function(data_obj) {
                 sub_panel, 
                 annotations,
                 panel_cols = list(channel = "channel_name", antigen = "marker_display_name", class = "marker_classification"),
-                md_cols = list(file = "sample_name", id = "sample_name", factors = c("arm","acquisition","timepoint")),
+                md_cols = list(file = "sample_name", id = "sample_name", factors = unique(unlist(annotation_levels$annotation_group))),
                 transform = TRUE,
                 cofactor = 5
                )
-    return (sce)
+    return(sce)
 }
