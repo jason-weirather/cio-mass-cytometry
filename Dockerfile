@@ -17,6 +17,9 @@ RUN cd /tmp && \
 RUN mkdir /.local && \
     chmod 777 /.local
 
+RUN mkdir /.jupyter && \
+    chmod 777 /.jupyter
+
 WORKDIR /home
 
 ##ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

@@ -30,8 +30,8 @@ def create_template(template_path,mylogger):
    _validator1 = get_validator(files('schemas').joinpath('panel.json'))
    _schema1 = _validator1.schema
 
-   logger.info("Reading and validating files.json")
-   _validator2 = get_validator(files('schemas').joinpath('files.json'))
+   logger.info("Reading and validating samples.json")
+   _validator2 = get_validator(files('schemas').joinpath('samples.json'))
    _schema2 = _validator2.schema
 
    logger.info("Reading and validating pipeline.json")
@@ -64,7 +64,7 @@ def create_template(template_path,mylogger):
 
    logger.info("Make a table to define the sample annotations")
    ws3 = wb.create_sheet("Sample Annotations")
-   _write_repeating(ws3,_schema2['definitions']['sample_annotations'])
+   _write_repeating(ws3,_schema2['properties']['samples']['items']['properties']['sample_annotations'])
    _fix_width(ws3)
 
    logger.info("End with the pipeline version")
