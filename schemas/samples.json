@@ -32,7 +32,7 @@
                 "annotation_type":{
                     "title":"Annotation Type",
                     "type":"string",
-                    "enum":["discrete","timepoint","batch","arm"]
+                    "enum":["discrete","timepoint","batch","arm","subject"]
                 },
                 "annotation_name":{
                     "title":"Label",

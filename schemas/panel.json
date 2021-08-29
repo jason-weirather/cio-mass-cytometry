@@ -31,14 +31,14 @@
                     },
                     "clone":{
                         "title":"Clone",
-                        "type":"string",
+                        "type":["string","null"],
                         "description":"The clone identifier for the antibody."
                     },
                     "compartment":{
                         "title":"Compartment",
-                        "type":"string",
                         "description":"Where this marker is expected to localize.",
-                        "enum":["Surface","Intracellular"]
+                        "type":"string",
+                        "enum":["Surface","Intracellular","Undefined"]
                     },
                     "marker_classification":{
                         "title":"Marker Classification",

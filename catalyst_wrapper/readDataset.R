@@ -1,4 +1,4 @@
-read_json <- function(sample_objs,use_marker_list) {
+read_json <- function(sample_objs,use_marker_list,prefix_to_drop) {
     # Iterate over the samples and get the list of FCS files to read
     #
     # Inputs: object from of the sample json which is a list
@@ -14,9 +14,11 @@ read_json <- function(sample_objs,use_marker_list) {
         sample_name <- sample_obj$sample_name
         fcs_path <- sample_obj$fcs_file$file_path
     
-        if (grepl( prefix_to_drop, fcs_path, fixed = TRUE)) {
-            # Fix the path if we have a prefix we need to drop
-            fcs_path <- str_replace(fcs_path, prefix_to_drop, "")
+        if (!is.null(prefix_to_drop)){
+            if (grepl( prefix_to_drop, fcs_path, fixed = TRUE)) {
+                # Fix the path if we have a prefix we need to drop
+                fcs_path <- str_replace(fcs_path, prefix_to_drop, "")
+            }            
         }
 
         # Pull out the annotations
@@ -57,7 +59,7 @@ read_json <- function(sample_objs,use_marker_list) {
     myval <- list(input_files=input_files,annotations=annotations)
     return (myval)
 }
-create_single_cell_experiment <- function(data_obj) {
+create_single_cell_experiment <- function(data_obj,prefix_to_drop = NULL) {
     panel <- data_obj$panel$markers
     panel <- as_tibble(do.call("rbind",panel))
     samples_json <- data_obj$samples
@@ -69,7 +71,7 @@ create_single_cell_experiment <- function(data_obj) {
     names(rename_marker_list)  <- tempdf$channel_name
     
     # Make sure all samples are readable
-    myval <- read_json(samples_json,use_marker_list)
+    myval <- read_json(samples_json,use_marker_list,prefix_to_drop)
     input_files <- myval$input_files
     annotations <- myval$annotations
 

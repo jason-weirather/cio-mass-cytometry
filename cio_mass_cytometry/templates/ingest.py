@@ -1,4 +1,4 @@
-import logging, os
+import logging, os, json
 import pandas as pd
 from openpyxl import load_workbook
 from cio_mass_cytometry.utilities import get_validator, get_version, sha256sum
@@ -32,7 +32,7 @@ def read_excel_template(template_path,mylogger):
 
     logger.info("Read the panel and panel parameters")
     panel_json = parse_panel(pd.read_excel(template_path,sheet_name=required_sheets['panel_parameters']),
-                        pd.read_excel(template_path,sheet_name=required_sheets['panel_definition'])
+                        pd.read_excel(template_path,sheet_name=required_sheets['panel_definition'],keep_default_na=False,na_values=[''])
             )
 
     logger.info("Read the samples")
@@ -66,6 +66,8 @@ def read_excel_template(template_path,mylogger):
 
 
 def parse_panel(panel_parameters,panel_definition):
+    #print([type(x) for x in panel_definition.iloc[:,4]])
+    # break
     # Get the json schema
     _validator = get_validator(files('schemas').joinpath('panel.json'))
     _schema = _validator.schema 
@@ -97,6 +99,7 @@ def parse_panel(panel_parameters,panel_definition):
             raise ValueError("expected panel definition title not found "+str(title))
     
     df = panel_definition.loc[:,list(_conv.keys())]
+
     # Go through and fill in default values
     for column_name in df.columns:
         if '(default TRUE)' in column_name:
@@ -104,13 +107,19 @@ def parse_panel(panel_parameters,panel_definition):
             df.loc[~df[column_name].isna(),column_name] = df.loc[~df[column_name].isna(),column_name].astype(bool)
     for column_name in df.columns:
         if '(default TRUE)' not in column_name:
+            df[column_name] = df[column_name].apply(lambda x: None if x!=x else x)
             df[column_name] = df[column_name].apply(lambda x: x if x is None else str(x))
-
+    
     # Now lets add some custom code for things with default values
+    #print(panel_definition.iloc[0:4,4:])
 
     df.columns = list(_conv.values())
-    panel_definition_json = [row.to_dict() for i,row in df.iterrows()]
+    df = df.applymap(lambda x: None if x!=x else x)
 
+    #print(df.iloc[:,3:])
+    panel_definition_json = [row.to_dict() for i,row in df.iterrows()]
+    print(json.dumps(panel_definition_json,indent=2))
+    #print([type(x) for x in df['compartment']])
     output = {
         'parameters':panel_parameters_json,
         'markers':panel_definition_json
@@ -144,6 +153,8 @@ def parse_samples(sample_manifest,sample_annotations):
         if '(default TRUE)' in column_name:
             df2.loc[df2[column_name].isna(),column_name] = True
             df2.loc[~df2[column_name].isna(),column_name] = df2.loc[~df2[column_name].isna(),column_name].astype(bool)
+    # THe annotation_name needs to be strings
+    df2['Label'] = df2['Label'].astype(str)
     df2.columns = list(_conv2.values())
 
     annotation_levels_json = [row.to_dict() for i,row in df2.iterrows()]
@@ -191,18 +202,22 @@ def parse_samples(sample_manifest,sample_annotations):
         samples_json[i]['fcs_file'] = _do_fcs_file(samples_json[i]['fcs_file'])
 
     # collect up the annotations .. a little hard coded
-    df1 = sample_manifest.set_index('Sample Name').loc[:,set(sample_manifest.columns)-set(_conv.keys())]
+    df1 = sample_manifest.set_index('Sample Name').loc[:,[x for x in set(sample_manifest.columns)-set(_conv.keys()) if 'Unnamed:' not in x]]
+    df1 = df1.applymap(lambda x: str(x))
     df1.index.name = 'sample_name'
 
     # Get the sample annotations, but still missing some information about the sample annotations
-    df1 = df1.stack().reset_index().rename(columns={'level_1':'annotation_group',0:'annotation_value'}).\
-        merge(df2,left_on=['annotation_group','annotation_value'],right_on=['annotation_group','annotation_name'],how='left')
-    if df1.loc[df1['annotation_order'].isna(),:].shape[0] > 0:
-        raise ValueError("Undefined annotation group "+str(df1.loc[df1['annotation_order'].isna(),'annotation_group'].unique()))
-    df1 = df1.drop(columns=['annotation_order','annotation_name','annotation_include','annotation_type'])
-    annotations = OrderedDict([(sample_name,OrderedDict(row.to_dict())) for sample_name, row in df1.set_index('sample_name').iterrows()])
+    df1lf = df1.stack().reset_index().rename(columns={'level_1':'annotation_group',0:'annotation_value'})
+    print(df1lf[0:4])
+    print(df2[0:4])
+    _combo = df1lf.merge(df2,left_on=['annotation_group','annotation_value'],right_on=['annotation_group','annotation_name'],how='left')
+    print(_combo)
+    if _combo.loc[_combo['annotation_order'].isna(),:].shape[0] > 0:
+        raise ValueError("Undefined annotation group "+str(_combo.loc[df1['annotation_order'].isna(),'annotation_group'].unique()))
+    _combo = _combo.drop(columns=['annotation_order','annotation_name','annotation_include','annotation_type'])
+    #annotations = OrderedDict([(sample_name,OrderedDict(row.to_dict())) for sample_name, row in _combo.set_index('sample_name').iterrows()])
 
-    annotations = df1.set_index('sample_name')
+    annotations = _combo.set_index('sample_name')
     for i, sample_object in enumerate(samples_json):
         sample_name = sample_object['sample_name']
         _annots = annotations.loc[sample_name]
@@ -213,7 +228,7 @@ def parse_samples(sample_manifest,sample_annotations):
         "annotation_levels":annotation_levels_json,
         "samples":samples_json
     }
-    
+    #print(json.dumps(annotation_levels_json,indent=2))
     _validator.validate(outputs)
 
     return outputs
