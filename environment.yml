@@ -9,6 +9,7 @@ dependencies:
   - r-umap=0.2.7.0
   - r-uwot=0.1.10
   - r-rjson=0.2.20
+  - r-ggpubr=0.4.0
   - libxml2=2.9.10
   - cairo=1.16.0
   - bioconductor-flowsom=1.22.0
