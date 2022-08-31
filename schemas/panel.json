@@ -26,7 +26,7 @@
                     },
                     "metal":{
                         "title":"Metal",
-                        "type":"string",
+                        "type":["string","null"],
                         "description":"The metal congugated to the Ab."
                     },
                     "clone":{
@@ -73,12 +73,12 @@
                 },
                 "panel_description":{
                     "title":"Panel Description",
-                    "type":"string",
+                    "type":["string","null"],
                     "description":"A description of the panel."
                 },
                 "panel_version":{
                     "title":"Panel Version",
-                    "type":"string",
+                    "type":["string","null"],
                     "description":"A version of the panel."
                 }
             },

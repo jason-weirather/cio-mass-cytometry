@@ -145,7 +145,7 @@ def parse_samples(sample_manifest,sample_annotations):
 
     # Lets the the sample annotation table
     # Get the samples
-    _annot_def = _schema['definitions']['annotation_level']['properties']
+    _annot_def = _schema['properties']['annotation_levels']['items']['properties']
     _conv2 = OrderedDict([(x[1]['title'],x[0]) for x in _annot_def.items() if 'title' in x[1]])
     df2 = sample_annotations.loc[:,list(_conv2.keys())]
     # Go through and fill in default values

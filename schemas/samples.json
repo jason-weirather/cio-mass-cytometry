@@ -20,41 +20,41 @@
                 }
             },
             "additionalProperties":false
-        },
-        "annotation_level":{
-            "type":"object",
-            "description":"An annotation attributed to a sample",
-            "properties":{
-                "annotation_group":{
-                    "title":"Annotation Group",
-                    "type":"string"
-                },
-                "annotation_type":{
-                    "title":"Annotation Type",
-                    "type":"string",
-                    "enum":["discrete","timepoint","batch","arm","subject"]
-                },
-                "annotation_name":{
-                    "title":"Label",
-                    "type":"string"
-                },
-                "annotation_order":{
-                    "title":"Numeric Order",
-                    "type":"integer"
-                },
-                "annotation_include":{
-                    "title":"Use Annotation (default TRUE)",
-                    "description":"Incorpate the annotation in the analysis",
-                    "type":"boolean"
-                }
-            }
         }
     },
     "properties":{
         "annotation_levels":{
             "type":"array",
             "description":"A list of all the expected annotations to for analysis",
-            "items":{"$ref":"#/definitions/annotation_level"}
+            "items":{
+                "type":"object",
+                "description":"An annotation attributed to a sample",
+                "properties":{
+                    "annotation_group":{
+                        "title":"Annotation Group",
+                        "type":"string"
+                    },
+                    "annotation_type":{
+                        "title":"Annotation Type",
+                        "type":"string",
+                        "enum":["discrete","timepoint","batch","arm","subject"]
+                    },
+                    "annotation_name":{
+                        "title":"Label",
+                        "type":"string"
+                    },
+                    "annotation_order":{
+                        "title":"Numeric Order",
+                        "type":"integer"
+                    },
+                    "annotation_include":{
+                        "title":"Use Annotation (default TRUE)",
+                        "description":"Incorpate the annotation in the analysis",
+                        "type":"boolean"
+                    }
+                }
+
+            }
         },
         "samples":{
             "type":"array",

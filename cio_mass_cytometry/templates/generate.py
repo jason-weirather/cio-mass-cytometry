@@ -64,7 +64,7 @@ def create_template(template_path,mylogger):
 
    logger.info("Make a table to define the sample annotations")
    ws3 = wb.create_sheet("Sample Annotations")
-   _write_repeating(ws3,_schema2['definitions']['annotation_level'])
+   _write_repeating(ws3,_schema2['properties']['annotation_levels'])
    _fix_width(ws3)
 
    logger.info("End with the pipeline version")
