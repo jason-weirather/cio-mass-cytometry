@@ -2,6 +2,7 @@ name: cio_mass_cytometry
 channels:
   - conda-forge
   - bioconda
+  - anaconda
 dependencies:
   - r-jsonvalidate=1.1.0
   - r-tidyverse=1.3.1
