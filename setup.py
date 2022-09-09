@@ -25,6 +25,7 @@ setup(
   ],
   keywords='bioinformatics',
   packages=['cio_mass_cytometry',
+            'cio_mass_cytometry.templates',
             'schemas'
             ],
   install_requires = ['jsonschema','importlib_resources','XlsxWriter'],
