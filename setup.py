@@ -25,10 +25,12 @@ setup(
   ],
   keywords='bioinformatics',
   packages=['cio_mass_cytometry',
+            'cio_mass_cytometry.templates',
             'schemas'
             ],
   install_requires = ['jsonschema','importlib_resources','XlsxWriter'],
   include_package_data = True,
+  package_data={'schemas':['*.json']},
   entry_points = {
     'console_scripts':['masscytometry-templates=cio_mass_cytometry.cli:main'
                       ]
