@@ -1,38 +1,46 @@
 # A mass cytometry workflow environment
-FROM continuumio/miniconda3:4.12.0
-ENV CONDA_PREFIX /opt/conda
+FROM condaforge/mambaforge:24.3.0-0
 
-RUN conda update -y conda
-
+# Upgrade pip and install necessary Python packages, then clean up
 RUN pip install --upgrade pip && \
-    pip install pyyaml
+    pip install pyyaml && \
+    mamba clean --all --yes
 
+# Copy environment.yml and install environment
 COPY environment.yml /tmp/environment.yml
 COPY scripts/install_environment.py /tmp/install_environment.py
 
+# Install environment and clean up
 RUN cd /tmp && \
     python /tmp/install_environment.py > /tmp/conda_install.sh && \
-    bash /tmp/conda_install.sh
+    bash /tmp/conda_install.sh && \
+    mamba clean --all --yes
 
-RUN apt update && apt-get install -y libcairo2-dev
-RUN conda install -c conda-forge r-cairo=1.6
+# Set non-interactive frontend to avoid prompts
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN R -e "install.packages('Cairo',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+# Install system dependencies and clean up
+RUN apt-get update && \
+    apt-get install -y libcairo2-dev tzdata && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
+# Install R packages using Mamba
+RUN mamba install -c conda-forge r-cairo=1.6 && mamba clean --all --yes
+
+# Install Cairo R package from CRAN
+RUN R -e "install.packages('Cairo', dependencies=TRUE, repos='http://cran.rstudio.com/')"
+
+# Copy the source code and install the package
 COPY . /source/cio-mass-cytometry
+RUN cd /source/cio-mass-cytometry && pip install . && mamba clean --all --yes
 
-RUN cd /source/cio-mass-cytometry && pip install .
+# Create necessary directories and set permissions
+RUN mkdir /.local && chmod 777 /.local && mkdir /.jupyter && chmod 777 /.jupyter
 
-RUN mkdir /.local && \
-    chmod 777 /.local
-
-RUN mkdir /.jupyter && \
-    chmod 777 /.jupyter
-
-
+# Set the working directory
 WORKDIR /home
 
-##ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-#ENTRYPOINT ["conda","run","--no-capture-output","-n",
+# Command to start Jupyter Lab
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--allow-root"]
 
-CMD ["jupyter","lab","--ip=0.0.0.0","--port=8888","--allow-root"]

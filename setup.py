@@ -8,7 +8,7 @@ with open(path.join(this_folder,'README.md'),encoding='utf-8') as inf:
 
 setup(
   name='cio_mass_cytometry',
-  version='0.1.1',
+  version='0.1.2',
   description='Check the assumptions of inputs for pythologist ahead of reading',
   long_description=long_description,
   test_suite='nose2.collector.collector',
