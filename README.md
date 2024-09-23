@@ -62,6 +62,11 @@ This will get information about the panel run out of the FCS file and ensure tha
 
 We use a python CLI created here to generate a new blank metadata template sheet, and then add on the sample names and file paths programatically.  
 
+### *Not shown in notebook:* Accurately complete in the metadata spreadsheet
+
+You may need to delete some headers if you dont have the information on sample annotations, or add additional headers if you have more that are not included here. As described in `cio_mass_cytometry/schemas
+/samples.json` the permitted annotation types are `["discrete","timepoint","batch","arm","subject"]`.  If you don't know what to call something, use `discrete`.  
+
 ### [notebooks/03 - Python - Ingest the filled-in metadata.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/03%20-%20Python%20-%20Ingest%20the%20filled-in%20metadata.ipynb)
 
 Take the completed metadata spreadsheet and ingest it making a validated json format of all the input data.
@@ -73,6 +78,10 @@ Use the metadata json you created to run CATALYST for the first stage of the pip
 ### [notebooks/05 - Python - Generate cluster template.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/05%20-%20Python%20-%20Generate%20cluster%20template.ipynb)
 
 Take the CATALYST outputs and produce a worksheet of unlabled clusters and generating figures.
+
+### *Not shown in notebook:* Accurately annote all clusters in the in the over-clustered excel sheet. 
+
+We recommend working with an immunologist to complete this section.
 
 ## Stage 2 (To run CATALYST and with labeled clusters)
 
