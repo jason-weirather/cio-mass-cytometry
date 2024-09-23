@@ -1,3 +1,8 @@
+# Environmental
+notebooks/data/
+notebooks/WORKFLOW/
+notebooks/scripts/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

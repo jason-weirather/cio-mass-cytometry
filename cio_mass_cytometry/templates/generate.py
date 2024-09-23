@@ -8,6 +8,8 @@ from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 from importlib_resources import files
 from cio_mass_cytometry.utilities import get_validator, get_version
+from cio_mass_cytometry import schemas
+
 
 highlight = NamedStyle(name="highlight")
 highlight.font = Font(bold=True)
@@ -27,15 +29,15 @@ logger = logging.getLogger()
 def create_template(template_path,mylogger):
    logger = mylogger
    logger.info("Reading and validating panel.json")
-   _validator1 = get_validator(files('schemas').joinpath('panel.json'))
+   _validator1 = get_validator(files(schemas).joinpath('panel.json'))
    _schema1 = _validator1.schema
 
    logger.info("Reading and validating samples.json")
-   _validator2 = get_validator(files('schemas').joinpath('samples.json'))
+   _validator2 = get_validator(files(schemas).joinpath('samples.json'))
    _schema2 = _validator2.schema
 
    logger.info("Reading and validating pipeline.json")
-   _validator3 = get_validator(files('schemas').joinpath('pipeline.json'))
+   _validator3 = get_validator(files(schemas).joinpath('pipeline.json'))
    _schema3 = _validator3.schema
 
    logger.info("Creating the Workbook")

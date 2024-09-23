@@ -5,7 +5,7 @@ from cio_mass_cytometry.utilities import get_validator, get_version, sha256sum
 from importlib_resources import files
 from collections import OrderedDict
 from datetime import datetime
-
+from cio_mass_cytometry import schemas
 
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger()
@@ -59,7 +59,7 @@ def read_excel_template(template_path,mylogger):
 
     logger.info("Validate the constructed analysis inputs")
 
-    _validator = get_validator(files('schemas').joinpath('inputs.json'))
+    _validator = get_validator(files(schemas).joinpath('inputs.json'))
     _validator.validate(output)
 
     return output
@@ -69,7 +69,7 @@ def parse_panel(panel_parameters,panel_definition):
     #print([type(x) for x in panel_definition.iloc[:,4]])
     # break
     # Get the json schema
-    _validator = get_validator(files('schemas').joinpath('panel.json'))
+    _validator = get_validator(files(schemas).joinpath('panel.json'))
     _schema = _validator.schema 
 
     # Read the first two columns that are in "Parameter" "Value" format
@@ -140,7 +140,7 @@ def parse_samples(sample_manifest,sample_annotations):
         }
 
     # Get the json schema
-    _validator = get_validator(files('schemas').joinpath('samples.json'))
+    _validator = get_validator(files(schemas).joinpath('samples.json'))
     _schema = _validator.schema 
 
     # Lets the the sample annotation table

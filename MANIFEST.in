@@ -1,0 +1,5 @@
+include cio_mass_cytometry/schemas/*.json
+include cio_mass_cytometry/data/*.fcs
+include cio_mass_cytometry/data/*.xlsx
+include cio_mass_cytometry/catalyst_wrapper/*.R
+
