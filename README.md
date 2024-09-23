@@ -62,7 +62,7 @@ This will get information about the panel run out of the FCS file and ensure tha
 
 We use a python CLI created here to generate a new blank metadata template sheet, and then add on the sample names and file paths programatically.  
 
-### *Not shown in notebook:* Accurately complete in the metadata spreadsheet
+### *Not shown in notebook:* Accurately complete the metadata spreadsheet
 
 You may need to delete some headers if you dont have the information on sample annotations, or add additional headers if you have more that are not included here. As described in `cio_mass_cytometry/schemas
 /samples.json` the permitted annotation types are `["discrete","timepoint","batch","arm","subject"]`.  If you don't know what to call something, use `discrete`.  
