@@ -10,7 +10,10 @@ Get the Docker image and start a JupyterLab server. The following is an example 
 
 ```bash
 docker pull vacation/cio-mass-cytometry:latest
-docker run --user $(id -u):$(id -g) -v /your/working/directory:/your/working/directory -w /your/working/directory --rm -p 8888:8888 vacation/cio-mass-cytometry:latest
+docker run --user $(id -u):$(id -g) \
+  -v /your/working/directory:/your/working/directory \
+  -w /your/working/directory \
+  --rm -p 8888:8888 vacation/cio-mass-cytometry:latest
 ```
 
 Look for the JupyterLab server address and paste it into your browser:
