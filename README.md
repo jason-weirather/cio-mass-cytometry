@@ -46,34 +46,68 @@ This gives us a simulated cohort with:
 
 ## Following the example
 
-Jupyter notebooks saved in `notebooks/` contain all the steps to work through a CyTOF project in your working directory.  I'll describe and link each step in the analysis here:
+Jupyter notebooks saved in `notebooks/` contain all the steps to work through a CyTOF project in your working directory.  All steps assume you have a fully capable environment needed by this pipeline installed, such as the Docker, but it can run from a local install.  I'll describe and link each step in the analysis here:
 
 ### [notebooks/00 - Python - Stage example data.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/00%20-%20Python%20-%20Stage%20example%20data.ipynb)
 
 This non-step will copy the FCS files to a `data/` file in your local environment, set up the `WORKFLOW/` directory where files used and created will reside, and the `scripts/` directory where the R script used for ingesting the project metadata resides.
 
+Pre: Nothing is required
+
+Post: Creates 3 directories
+
+* `data/`: contains FCS files `*.fcs`
+* `WORKFLOW/`: will be used to save all files, figures, and data from the run.  Divided into `stage_1/` with QC and over-clustering (unlabeled) used to make the clustering worksheet, and `stage_2/` where we use the completed annotated clustering worksheet to finish the feature extraction. Contains a pre-made metadata template (`stage_1/03-INPUT-metadata-completed.xlsx` you can use as a reference or directly), and a pre-made labeled clustering (you can use as a reference or directly `stage_2/06-INPUT-stage2-annotated-clusters-50.xlsx`), but the pre-made labeled clustering may be subject to stochastic changes in other environments so you should review and fill-in your clustering worksheet accordingly.
+* `scripts/`: copy of our helper script `readDataset.R` for CATALYST to where its easy to get to.
+
 ## Stage 1 (To run CATALYST and get unlabeled clusters)
 
 ### [notebooks/01 - R - Get Panel details.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/01%20-%20R%20-%20Get%20Panel%20details.ipynb)
 
-This will get information about the panel run out of the FCS file and ensure that panel details are consistent across FCS files, this will be used to fill in the metadata accurately.
+This will get information about the panel run out of the FCS file and ensure that panel details are consistent across FCS files, this will be used to fill in the metadata accurately. 
+
+Pre: Requires the FCS files
+
+Post: Extracts the header table from one of the FCS files.
+
+👁️ Review required: You need to check that all FCS files are defined by this same table by checking that their hashes are all identical.
 
 ### [notebooks/02 - Python - Create metadata template.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/02%20-%20Python%20-%20Create%20metadata%20template.ipynb)
 
 We use a python CLI created here to generate a new blank metadata template sheet, and then add on the sample names and file paths programatically.  
+
+Pre: Nothing is required
+
+Post: Creates `WORKFLOW/stage_1/02-metadata-template.xlsx`
+
+Modifies: After creating the metadata template (blank) it is filled in with sample names and file paths
 
 ### *Not shown in notebook:* Accurately complete the metadata spreadsheet
 
 You may need to delete some headers if you dont have the information on sample annotations, or add additional headers if you have more that are not included here. As described in `cio_mass_cytometry/schemas
 /samples.json` the permitted annotation types are `["discrete","timepoint","batch","arm","subject"]`.  If you don't know what to call something, use `discrete`.  
 
+Pre: You start with a blank or partially filled in template `WORKFLOW/stage_1/02-metadata-template.xlsx`
+
+Post: You upload your filled-in `WORKFLOW/stage_1/03-INPUT-metadata-completed.xlsx` or use the one that was placed there as an example.
+
 ### [notebooks/03 - Python - Ingest the filled-in metadata.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/03%20-%20Python%20-%20Ingest%20the%20filled-in%20metadata.ipynb)
 
 Take the completed metadata spreadsheet and ingest it making a validated json format of all the input data.
 
+Pre: Requires your filled-in template describing your project `WORKFLOW/stage_1/02-metadata-template.xlsx`
+
+Post: You get a json format representation of your template in `WORKFLOW/stage_1/04-metadata-completed.json`
+
 ### [notebooks/04 - R - Run CATALYST stage 1.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/04%20-%20R%20-%20Run%20CATALYST%20stage%201.ipynb)
 
 Use the metadata json you created to run CATALYST for the first stage of the pipeline and over-clustering.
+
+Pre: Requires your accurately filled-in and json converted metadata `WORKFLOW/stage_1/04-metadata-completed.json`, and needs the `scripts/readDataset.R` helper script to automate the ingestion.
+
+Post: There are a lot of figures and data generated here.
+
+👁️ Review required: The are a lot of things to check here.
 
 ### [notebooks/05 - Python - Generate cluster template.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/05%20-%20Python%20-%20Generate%20cluster%20template.ipynb)
 
