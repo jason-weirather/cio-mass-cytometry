@@ -115,11 +115,13 @@ Post: Creates a worksheet template for labeling clusters in `WORKFLOW/stage_1/05
 
 ## *Not shown in notebook:* Accurately annote all clusters in the in the over-clustered excel sheet. 
 
-We recommend working with an immunologist to complete this section.
+You download the worksheet and you can use it in conjunction with the stage_1 CATALYST workflow to fill in which cell population each cluster represents.  Take notice of the % of cellularity of each population because there may be some very small populations that are not easily classified but may be better to just set to an unknown or other label.
 
 Pre: Take the unlabeled worksheet `WORKFLOW/stage_1/05-stage1-unannotated-clusters-50.xlsx`
 
 Post: The saved labeled worksheet `WORKFLOW/stage_2/06-INPUT-stage2-annotated-clusters-50.xlsx`; Note this marks our switch from stage 1 of the workflow to stage 2.
+
+👁️ Review required: We recommend working with an immunologist to complete this section.
 
 ## [notebooks/06 - Python - Ingest labeled clusters.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/06%20-%20Python%20-%20Ingest%20labeled%20clusters.ipynb)
 
@@ -133,9 +135,30 @@ Post: Is convereted to a json representation for easy ingestion in R `WORKFLOW/s
 
 Use the cluster label json and the previous run of CATALYST to run the rest of the CATALYST pipeline, now with known cell labels generating figures.
 
+Pre: Requires the Intermediate RDS file and UMAP embeddings, as well as the json converted labels.
+
+Post: More final figures and data exports
+
+👁️ Review required: There are many figures to inspect and all may require some adjustments to properly format the image.
+
+* UMAP clusters: The cell-type labeled UMAP should have cell types well clustered.
+* Heatmap with flowsom labels: This is not particularly great but it shows both the flowsom and cell type labels.
+* Heatmap labeled: This is an excellent plot for verifying the cell type markers are where expected
+* Heatmap all markers labeled: Even bertter this has the functional markers too
+* Stacked bar plots: You may need to modify the workflow to generate more of these, because if you have things like Arm and Response, it will probably be necessary to plot these for each of those.
+* Median expression plots: These are useful for seeing what the expression of functional markers are on each cell type.
+
 ## [notebooks/08 - Python - Output data.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/08%20-%20Python%20-%20Output%20data.ipynb)
 
 Save primary per-cell data and cell-type frequency, cell-type expression, and pseudobulk expression data out.
+
+Pre: Requires the intermediate files from both `stage_1` and `stage_2` as well as our completed metadata.  
+
+Post: Some primary data outputs suitable for further analysis
+* `WORKFLOW/stage_2/Data_01_cellular_data.parquet`: A one-cell-per-row file with the cluster label of each cell, meta data labels, calcualted UMAP embedding, and the expression of each marker arcsinh transformed.
+* `WORKFLOW/stage_2/Data_02_cell_type_percent.csv`: For each sample, the percent of each cell-type called present.
+* `WORKFLOW/stage_2/Data_03_cell_type_expression_mean_median.csv`: For each cell type in each sample, the mean and median expressions of each marker.
+* `WORKFLOW/stage_2/Data_04_psuedobulk_expression_mean_median.csv`: For each sample, the pseudobulk mean and median expression of each marker.
 
 # CLI description
 
