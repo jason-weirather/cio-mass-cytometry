@@ -4,7 +4,7 @@ This pipeline helps streamline the workflow of CATALYST (1)
 
 1. Nowicka M et. al. CyTOF workflow: differential discovery in high-throughput high-dimensional cytometry datasets. F1000Res. 2017 May 26;6:748. doi: 10.12688/f1000research.11622.3.
 
-## Quickstart
+# Quickstart
 
 Get the docker image and start a jupyter lab server, example on Linux running the jupyter lab server as yourself:
 
