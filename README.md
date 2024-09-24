@@ -91,9 +91,19 @@ Use the metadata json you created to run CATALYST for the first stage of the pip
 
 Pre: Requires your accurately filled-in and json converted metadata `WORKFLOW/stage_1/04-metadata-completed.json`, and needs the `scripts/readDataset.R` helper script to automate the ingestion.
 
-Post: There are a lot of figures and data generated here.
+Post: There are a lot of figures and data generated here.  Figures will be discussed in the review notes, and there is several intermediate data files generated.
 
 👁️ Review required: The are a lot of things to check here.
+* Plot quality: You may need to adjust parameters across any plots to get formatting how you like it.
+* Cell counts plot: Does it indicate that some samples should just be out-right dropped? If yes, it can be dropped by flagging it in the metadata spreadsheet.
+* MDS plots: The dimensional reduction should be inspected for any strong outlier samples that may have issues that need follow-up in FlowJo or more manual inspections.  It should also be used to understand if any batch effects are prominent in the dataset because strong batch effects may interfere with clustering efficacty.  In the example data, a strong difference is seen with `Timepoint` due to our simulated biological effect.
+* NRS plots: These can help inform what is driving the signal in the MDS plots, here you can see the injected signal from CD8 T cells pushing differences in the MDS.
+* Pseudobulk plot: It may help to inform if some particular marker has abherent expression on a particular sample.
+* Flowsom clustering: The most important question to be asking is if the clustering count is high enough to capture all the cell populations you are interested in labeling.  If you try to set the clustering of Flowsom too low, then distinct populations could be combined together into one erroneously.  If you have batch effects present this can be exhasorbated because you may need different clusters for each batch.  If you see batches in the MDS, and you see batches here, and you see batches in the upcoming UMAP, it may be time to stop and treat your batches as seperate analysis projects for cell-type assignment.
+* Type marker plot: This is a great plot but if you have an enormous amount of samples, you may need to omit this plot because it takes a long time to generate. This plot can be a useful reference when you are labeling your clusters because you can understand for both phenotypic and functional markers if their distribution indicates a cluster is a particular cell-type.  It could also help you see if you may have erroneously combined some populations.
+* UMAP by cluster_id: The clusters should look clustered on the UMAP
+* UMAP expression plots: This is important to look at to see if you have expected cell populations clustered into single clusters.  If you see cell populations consistently showing up in two clusters, this could indicate that either a) you have erroneously passed in a barcoding marker as a cell typing marker (happens with CD45 sometimes), or b) you have a batch effect and its time to analyze that batch seperately for cell-type assignment (or executing some batch effect correcting method out of scope here).
+* Multiheatmap: See cluster expression in samples to help understand any odd-ball samples.
 
 ## [notebooks/05 - Python - Generate cluster template.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/05%20-%20Python%20-%20Generate%20cluster%20template.ipynb)
 
