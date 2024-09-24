@@ -4,16 +4,6 @@ This pipeline helps streamline the workflow of CATALYST (1)
 
 1. Nowicka M et. al. CyTOF workflow: differential discovery in high-throughput high-dimensional cytometry datasets. F1000Res. 2017 May 26;6:748. doi: 10.12688/f1000research.11622.3.
 
-### Input: 
-
-1. FCS files (one file per sample, already cleaned for dead cells and debris)
-2. Sample annotations
-
-### Output:
-
-1. Figures including QC, UMAPs, heatmaps, and stacked bar plots
-2. Data from labeled cell-type clusters and the marker expression on each cell type
-
 ## Quickstart
 
 Get the docker image and start a jupyter lab server, example on Linux running the jupyter lab server as yourself:
