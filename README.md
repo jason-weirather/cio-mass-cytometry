@@ -109,13 +109,25 @@ Post: There are a lot of figures and data generated here.  Figures will be discu
 
 Take the CATALYST outputs and produce a worksheet of unlabled clusters and generating figures.
 
+Pre: Uses the metadata converted json `WORKFLOW/stage_1/04-metadata-completed.json`, and the four `WORKFLOW/stage_1/Intermediate_*` files from the previous step.
+
+Post: Creates a worksheet template for labeling clusters in `WORKFLOW/stage_1/05-stage1-unannotated-clusters-50.xlsx`
+
 ## *Not shown in notebook:* Accurately annote all clusters in the in the over-clustered excel sheet. 
 
 We recommend working with an immunologist to complete this section.
 
+Pre: Take the unlabeled worksheet `WORKFLOW/stage_1/05-stage1-unannotated-clusters-50.xlsx`
+
+Post: The saved labeled worksheet `WORKFLOW/stage_2/06-INPUT-stage2-annotated-clusters-50.xlsx`; Note this marks our switch from stage 1 of the workflow to stage 2.
+
 ## [notebooks/06 - Python - Ingest labeled clusters.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/06%20-%20Python%20-%20Ingest%20labeled%20clusters.ipynb)
 
 Ingest the Excel spreadsheet with cluster labels and save it as a json.
+
+Pre: The labeled worksheet `WORKFLOW/stage_2/06-INPUT-stage2-annotated-clusters-50.xlsx`
+
+Post: Is convereted to a json representation for easy ingestion in R `WORKFLOW/stage_2/07-cluster_id_conversion.json`
 
 ## [notebooks/07 - R - Run CATALYST stage 2.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/07%20-%20R%20-%20Run%20CATALYST%20stage%202.ipynb)
 
