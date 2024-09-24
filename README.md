@@ -68,7 +68,7 @@ Post: Creates `WORKFLOW/stage_1/02-metadata-template.xlsx`
 
 Modifies: After creating the metadata template (blank) it is filled in with sample names and file paths
 
-### *Not shown in notebook:* Accurately complete the metadata spreadsheet
+## *Not shown in notebook:* Accurately complete the metadata spreadsheet
 
 You may need to delete some headers if you dont have the information on sample annotations, or add additional headers if you have more that are not included here. As described in `cio_mass_cytometry/schemas
 /samples.json` the permitted annotation types are `["discrete","timepoint","batch","arm","subject"]`.  If you don't know what to call something, use `discrete`.  
