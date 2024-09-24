@@ -183,7 +183,7 @@ $ masscytometry-templates add_samples --samples_path /my/FCS/storage/directory/ 
 
 ##### a. The Panel Parameters
 
-This is a simple description of ...
+This is an annotation derived from the FCS file header.
 
 ##### b. The Panel Definition
 
