@@ -22,7 +22,11 @@ Look for the JupyterLab server address and paste it into your browser:
 
 ## Example
 
-Jupyter notebooks saved in `notebooks/` contain all the steps to work through a CyTOF project in your working directory. All steps assume you have a fully capable environment needed by this pipeline installed, such as Docker, but it can run from a local install. We'll describe and link each step in the analysis here:
+We'll describe and link each step in the analysis here:
+
+Jupyter notebooks saved in `notebooks/` contain all the steps to work through a CyTOF project. To get started you can clone this repository, and copy the `notebooks/` folder into your working directory and work from there.
+
+All steps assume you have a fully capable environment needed by this pipeline installed; using the Docker may be the easiest way to set up your environment. 
 
 ### [notebooks/00 - Python - Stage example data.ipynb](https://github.com/jason-weirather/cio-mass-cytometry/blob/main/notebooks/00%20-%20Python%20-%20Stage%20example%20data.ipynb)
 
